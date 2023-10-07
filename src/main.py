@@ -29,6 +29,7 @@ fiis.append(ticker('XPCI11','FII'))
 
 
 xpaths_fiis = []
+xpaths_fiis.append(xpath('Cotação','//*[@id="cards-ticker"]/div[1]/div[2]/div/span'))
 xpaths_fiis.append(xpath('P/VP','//*[@id="cards-ticker"]/div[3]/div[2]/span'))
 xpaths_fiis.append(xpath('Razão Social','//*[@id="table-indicators"]/div[1]/div[2]/div/span'))
 xpaths_fiis.append(xpath('CNPJ','//*[@id="table-indicators"]/div[2]/div[2]/div/span'))
@@ -54,6 +55,32 @@ for ticker in fiis:
     driver.get("https://investidor10.com.br/" + ticker.type.lower() + "s/" + ticker.name)
 
     for xpath in xpaths_fiis:
-        print(xpath.label + ": " + driver.find_element("xpath", xpath.path).text)
+        key = xpath.label
+        value = driver.find_element("xpath", xpath.path).text
+        print(key + ": " + value)
+
+
+        if key == 'Cotação':
+            with open('output/cotacoes.txt', 'a') as f:
+                f.write(value.replace('R$ ','') + '\n')
+
+        if key == 'P/VP':
+            with open('output/pvp.txt', 'a') as f:
+                f.write(value + '\n')
+
+        if key == 'ÚLTIMO RENDIMENTO':
+            with open('output/rendimentos.txt', 'a') as f:
+                f.write(value.replace('R$ ','') + '\n')
 
     print("---")
+
+
+
+with open('output/cotacoes.txt', 'a') as f:
+    f.write("---" + '\n')
+
+with open('output/pvp.txt', 'a') as f:
+    f.write("---" + '\n')
+
+with open('output/rendimentos.txt', 'a') as f:
+    f.write("---" + '\n')
